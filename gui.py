@@ -2,6 +2,14 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 import re
 
+def is_there_error_matrix(arr, days, customers):
+    for subarr in arr:
+        if len(subarr) != days:
+            return True
+    if len(arr) != customers:
+        return True
+    return False
+
 # Function to validate and retrieve data from entries
 def get_data():
     try:
@@ -17,7 +25,9 @@ def get_data():
         G = float(G_entry.get())
 
         # Check if the lengths of lists match n and m
-        if len(capacity) != n or len(production_cost) != n or len(payment_per_mw) != m or len(demand) != m:
+        if len(capacity) != 3 or len(production_cost) != 3:
+            raise ValueError("List lengths do not match with value 3, please correct it") 
+        if len(payment_per_mw) != m or is_there_error_matrix(demand, n, m):
             raise ValueError("List lengths do not match n or m.")
 
         # Display the data
