@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
+import re
 
 # Function to validate and retrieve data from entries
 def get_data():
@@ -27,6 +28,33 @@ def get_data():
     except ValueError as ve:
         messagebox.showerror("Error", f"Invalid input: {ve}")
 
+def load_file():
+    file_path = filedialog.askopenfilename(filetypes=[("DZN files", "*.dzn"), ("Text files", "*.txt")])
+    if file_path:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            # Use regular expressions to find the values in the file
+            n = re.search(r'n\s*=\s*(\d+);', content)
+            m = re.search(r'm\s*=\s*(\d+);', content)
+            chda = re.search(r'consecutive_high_days_allowed\s*=\s*(\d+);', content)
+            hrp = re.search(r'high_regime_percentage\s*=\s*(\d+);', content)
+            capacity = re.search(r'capacity\s*=\s*\[(.*?)\];', content)
+            pc = re.search(r'production_cost\s*=\s*\[(.*?)\];', content)
+            demand = re.search(r'demand\s*=\s*\[\|(.+?)\|\];', content, re.DOTALL)
+            ppm = re.search(r'payment_per_mw\s*=\s*\[(.*?)\];', content)
+            G = re.search(r'G\s*=\s*(\d+);', content)
+
+            # Update the entries with the values found
+            if n: n_entry.delete(0, tk.END); n_entry.insert(0, n.group(1))
+            if m: m_entry.delete(0, tk.END); m_entry.insert(0, m.group(1))
+            if chda: chda_entry.delete(0, tk.END); chda_entry.insert(0, chda.group(1))
+            if hrp: hrp_entry.delete(0, tk.END); hrp_entry.insert(0, hrp.group(1))
+            if capacity: capacity_entry.delete(0, tk.END); capacity_entry.insert(0, capacity.group(1))
+            if pc: pc_entry.delete(0, tk.END); pc_entry.insert(0, pc.group(1))
+            if demand: demand_text.delete("1.0", tk.END); demand_text.insert(tk.END, demand.group(1).replace('|', '').strip())
+            if ppm: ppm_entry.delete(0, tk.END); ppm_entry.insert(0, ppm.group(1))
+            if G: G_entry.delete(0, tk.END); G_entry.insert(0, G.group(1))
+
 # Create the main window
 root = tk.Tk()
 root.title("Data Input Interface")
@@ -44,7 +72,7 @@ tk.Label(root, text="Consecutive High Days Allowed:").grid(row=2, column=0)
 chda_entry = tk.Entry(root)
 chda_entry.grid(row=2, column=1)
 
-tk.Label(root, text="High Regime Percentage:").grid(row=3, column=0)
+tk.Label(root, text="High Regime Percentage (int):").grid(row=3, column=0)
 hrp_entry = tk.Entry(root)
 hrp_entry.grid(row=3, column=1)
 
@@ -64,13 +92,17 @@ tk.Label(root, text="Payment per MW (comma-separated):").grid(row=7, column=0)
 ppm_entry = tk.Entry(root)
 ppm_entry.grid(row=7, column=1)
 
-tk.Label(root, text="Minimum satisfaction percentage for each customer (G):").grid(row=8, column=0)
+tk.Label(root, text="Minimum satisfaction percentage (int) for each customer (G):").grid(row=8, column=0)
 G_entry = tk.Entry(root)
 G_entry.grid(row=8, column=1)
 
 # Create and place the submit button
 submit_button = tk.Button(root, text="Submit", command=get_data)
 submit_button.grid(row=9, column=0, columnspan=2)
+
+# Create and place the load file button
+load_button = tk.Button(root, text="Load File", command=load_file)
+load_button.grid(row=10, column=0, columnspan=2)
 
 # Run the main loop
 root.mainloop()
