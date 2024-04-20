@@ -1,0 +1,11 @@
+n = 3;
+m = 3;
+consecutive_high_days_allowed = 1;
+high_regime_percentage = 80;
+capacity = [10, 300, 50];
+production_cost = [23.5, 13.7, 31.0];
+demand = [| 300, 149, 250 
+          | 89, 52, 135 
+          | 97, 110, 89 |];
+payment_per_mw = [40.2, 55.6, 45.9];
+G = 50;
