@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import re
+from execution_model_minizinc import get_results
 
 def is_there_error_matrix(arr, days, customers):
     for subarr in arr:
@@ -17,28 +18,49 @@ def get_data():
         n = int(n_entry.get())
         m = int(m_entry.get())
         consecutive_high_days_allowed = int(chda_entry.get())
-        high_regime_percentage = float(hrp_entry.get())
+        high_regime_percentage = int(hrp_entry.get())
         capacity = list(map(int, capacity_entry.get().split(',')))
         production_cost = list(map(float, pc_entry.get().split(',')))
         demand = [list(map(int, row.split(','))) for row in demand_text.get("1.0", tk.END).strip().split('\n')]
         payment_per_mw = list(map(float, ppm_entry.get().split(',')))
-        G = float(G_entry.get())
+        G = int(G_entry.get())
 
         # Check if the lengths of lists match n and m
         if len(capacity) != 3 or len(production_cost) != 3:
             raise ValueError("List lengths do not match with value 3, please correct it") 
         if len(payment_per_mw) != m or is_there_error_matrix(demand, n, m):
             raise ValueError("List lengths do not match n or m.")
+        
+        params = {
+            "n": n,
+            "m": m,
+            "consecutive_high_days_allowed": consecutive_high_days_allowed,
+            "high_regime_percentage": high_regime_percentage,
+            "capacity": capacity,
+            "production_cost": production_cost,
+            "demand": demand,
+            "payment_per_mw": payment_per_mw,
+            "G": G
+        }
+        net_profit, plants, customers = get_results(params)
 
         # Display the data
         messagebox.showinfo("Data Retrieved", f"n: {n}\nm: {m}\nConsecutive High Days Allowed: {consecutive_high_days_allowed}\n"
-                                             f"High Regime Percentage: {high_regime_percentage}\nCapacity: {capacity}\n"
-                                             f"Production Cost: {production_cost}\nDemand: {demand}\n"
-                                             f"Payment per MW: {payment_per_mw}\nG: {G}")
+        f"High Regime Percentage: {high_regime_percentage}\nCapacity: {capacity}\n"
+        f"Production Cost: {production_cost}\nDemand: {demand}\n"
+        f"Payment per MW: {payment_per_mw}\nG: {G}"
+        f"--------------------------"
+        f"\nnet_profit: {net_profit}" 
+        f"\nplants: {plants}" 
+        f"\ncustomers: {customers}"
+        )
     except ValueError as ve:
         messagebox.showerror("Error", f"Invalid input: {ve}")
 
 def load_file():
+    """
+    Function to get parameters from a file .dzn or .txt to put in the respective fields of the GUI
+    """
     file_path = filedialog.askopenfilename(filetypes=[("DZN files", "*.dzn"), ("Text files", "*.txt")])
     if file_path:
         with open(file_path, 'r') as file:
