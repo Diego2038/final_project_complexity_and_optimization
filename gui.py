@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 import re
 from execution_model_minizinc import get_results
+from create_table import create_dual_tables
 
 def is_there_error_matrix(arr, days, customers):
     for subarr in arr:
@@ -49,11 +50,8 @@ def get_data():
         f"High Regime Percentage: {high_regime_percentage}\nCapacity: {capacity}\n"
         f"Production Cost: {production_cost}\nDemand: {demand}\n"
         f"Payment per MW: {payment_per_mw}\nG: {G}"
-        f"--------------------------"
-        f"\nnet_profit: {net_profit}" 
-        f"\nplants: {plants}" 
-        f"\ncustomers: {customers}"
         )
+        create_dual_tables(net_profit, plants, customers)
     except ValueError as ve:
         messagebox.showerror("Error", f"Invalid input: {ve}")
 

@@ -39,7 +39,7 @@ def insert_model(params):
         result = instance.solve()
         return str(result)
     except Exception as e:
-        print(f"Hay un error! {type(e)} - {e}")
+        print(f"There's an error! OOOPPPS: {type(e)} - {e}")
 
 
 def parse_data(input_string):
@@ -87,4 +87,3 @@ def get_results(params):
     result_str = insert_model(params)
     net_profit, plants, customers = parse_data(result_str)
     return net_profit, plants, customers
-    
