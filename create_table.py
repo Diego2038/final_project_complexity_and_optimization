@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Label, Entry, Frame
+from button_heat_map import create_head_map
 
 def create_dual_tables(data0, data1, data2):
     # Create a new top-level window
@@ -23,6 +24,10 @@ def create_dual_tables(data0, data1, data2):
 
     # Create second table
     create_table(ventana, "Delivered", "Customer" , data2, row_offset=len(data1)+4)
+    
+    # Insert button
+    heatmap_button = create_head_map(frame, data1, data2)
+    heatmap_button.grid(row=0, column=2, padx=5)
 
     # Mostrar la ventana
     ventana.mainloop()
