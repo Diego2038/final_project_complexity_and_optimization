@@ -31,7 +31,8 @@ python3 -m venv venv
 
 If you're in Windows
 ```bash
-.\venv\Script\activate
+.\venv\Script
+./activate
 ```
 If you're in Linux or MacOs:
 ```bash
@@ -52,7 +53,7 @@ pip3 install -r requirements.txt
 This will install all the necessary Python libraries that are defined in the requirements.txt file.
 
 ## Application Execution
-Once you have configured your environment and verified the installation of MiniZinc, you can run the application with the following command:
+Once you have configured your environment and verified the installation of MiniZinc, you can run the application with the following command (Remember to return from the venv to the root of the project):
 ```bash
 python gui.py
 ```
